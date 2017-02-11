@@ -35,6 +35,19 @@ module Mastodon
       def public_timeline(options = {})
         perform_request_with_collection(:get, '/api/v1/timelines/public', options, Mastodon::Status)
       end
+
+      # Retrieve statuses from the timeline matching the given hashtag
+      # @param tag [String] the hashtag of interest, e.g. "mastoart"
+      # @param options [Hash]
+      # @option options :max_id [Integer]
+      # @option options :since_id [Integer]
+      # @option options :limit [Integer]
+      # @return [Mastodon::Collection<Mastodon::Status>]
+      def tag_timeline(tag, options = {})
+        @tpl ||= Addressable::Template.new('/api/v1/timelines/tag/{tag}')
+
+        perform_request_with_collection(:get, @tpl.expand('tag' => tag), options, Mastodon::Status)
+      end
     end
   end
 end
